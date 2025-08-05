@@ -48,12 +48,14 @@ export function useBackHandler({ enabled, callback }: IParams) {
       callback();
       return true;
     };
+    let subscription: any;
     if (enabled) {
-      BackHandler.addEventListener('hardwareBackPress', backHandler);
-    } else {
-      BackHandler.removeEventListener('hardwareBackPress', backHandler);
+      subscription = BackHandler.addEventListener('hardwareBackPress', backHandler);
     }
-    return () =>
-      BackHandler.removeEventListener('hardwareBackPress', backHandler);
+    return () => {
+      if (subscription) {
+        subscription.remove();
+      }
+    };
   }, [enabled, callback]);
 }
